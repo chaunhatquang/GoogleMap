@@ -9,12 +9,6 @@ public class Note {
     private String title;
     private String content;
 
-    public Note(long id, String title, String content) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
-    }
-
     public long getId() {
         return id;
     }
