@@ -8,6 +8,16 @@ public class Note {
     private long id;
     private String title;
     private String content;
+    private String lastModified;
+
+    public String getLastModified() {
+        return lastModified;
+    }
+
+    public Note setLastModified(String lastModified) {
+        this.lastModified = lastModified;
+        return this;
+    }
 
     public long getId() {
         return id;

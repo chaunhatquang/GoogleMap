@@ -22,10 +22,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String KEY_ID_NOTE = "id";
     public static final String KEY_TITLE_NOTE ="title";
     public static final String KEY_CONTENT_NOTE ="content";
+    public static final String KEY_LAST_MODIFIED_NOTE = "last_modified";
     // String for create table note
-    public static final String CREATE_TABLE_NOTE = "CREATE TABLE" + TABLE_NOTE + "(" + KEY_ID_NOTE + "INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL" + "," + KEY_TITLE_NOTE + "TEXT NOT NULL" + "," + KEY_CONTENT_NOTE + "TEXT NOT NULL" + ")";
+    public static final String CREATE_TABLE_NOTE = "CREATE TABLE" + TABLE_NOTE + "(" + KEY_ID_NOTE + "INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL" + "," + KEY_TITLE_NOTE + "TEXT NOT NULL" + "," + KEY_CONTENT_NOTE + "TEXT NOT NULL" + KEY_LAST_MODIFIED_NOTE +"TEXT DEFAULT \'\'" + ")";
     //value for update database
-    public static final int DATA_VERSION = 1;
+    public static final int DATA_VERSION = 2;
     //sqlite database
     private SQLiteDatabase db;
 
@@ -49,8 +50,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //help we update databse
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        //update database for database version < 2
+        if(oldVersion < 2){
+            db.execSQL("ALTER TABLE" + TABLE_NOTE + "ADD COLUMN " + KEY_LAST_MODIFIED_NOTE + "TEXT DEFAULT \'\'");
+        }
     }
+
     //open database
     public void open(){
         try{
@@ -158,12 +163,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(KEY_TITLE_NOTE,note.getTitle());
         values.put(KEY_CONTENT_NOTE,note.getContent());
+        values.put(KEY_LAST_MODIFIED_NOTE,note.getLastModified());
         return values;
     }
     //convert cursor to note
     private Note cursorToNote(Cursor cursor){
         Note note = new Note();
-        note.setId(cursor.getInt(cursor.getColumnIndex(KEY_ID_NOTE))).setTitle(cursor.getString(cursor.getColumnIndex(KEY_TITLE_NOTE))).setContent(cursor.getString(cursor.getColumnIndex(KEY_CONTENT_NOTE)));
+        note.setId(cursor.getInt(cursor.getColumnIndex(KEY_ID_NOTE))).setTitle(cursor.getString(cursor.getColumnIndex(KEY_TITLE_NOTE))).setContent(cursor.getString(cursor.getColumnIndex(KEY_CONTENT_NOTE))).setLastModified(cursor.getString(cursor.getColumnIndex(KEY_LAST_MODIFIED_NOTE)));
         return note;
     }
 }
