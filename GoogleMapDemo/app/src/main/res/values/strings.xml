@@ -2,5 +2,6 @@
     <string name="app_name">GoogleMapDemo</string>
     <string name="action_setting">Settings</string>
     <string name="btn_logout">Logout from Google</string>
-    <string name="revoke_access">Revoke Access</string>
+    <string name="revoke_access">Google Map</string>
+    <string name="loading">Loading</string>
 </resources>
