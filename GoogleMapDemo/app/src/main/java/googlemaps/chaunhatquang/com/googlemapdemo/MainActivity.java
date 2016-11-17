@@ -3,6 +3,7 @@ package googlemaps.chaunhatquang.com.googlemapdemo;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -25,7 +27,7 @@ import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener,GoogleApiClient.OnConnectionFailedListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int RC_SIGN_IN = 007;
     private GoogleApiClient mGoogleApiClient;
@@ -58,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .requestEmail()
                 .build();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
@@ -80,13 +83,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void revokeAccess() {
-        Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
-                        updateUI(false);
-                    }
-                });
+        Intent map = new Intent(MainActivity.this,MapsActivity.class);
+        startActivity(map);
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
@@ -186,10 +184,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-        @Override
-        public void onConnectionFailed (@NonNull ConnectionResult connectionResult){
-            Log.d(TAG,"onConnectionFailed:" + connectionResult);
-        }
+    @Override
+    public void onConnectionFailed (@NonNull ConnectionResult connectionResult){
+        Log.d(TAG,"onConnectionFailed:" + connectionResult);
+    }
     private void hideProgressDialog() {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.hide();
@@ -204,6 +202,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         mProgressDialog.show();
+    }
+
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        Toast.makeText(this, "Conected", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
     }
 }
 
